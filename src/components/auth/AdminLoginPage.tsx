@@ -1,40 +1,48 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { 
-  Shield, 
-  Lock, 
-  Eye, 
-  EyeOff, 
-  ArrowLeft, 
-  ArrowRight, 
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import {
+  Shield,
+  Lock,
+  Eye,
+  EyeOff,
+  ArrowLeft,
+  ArrowRight,
   Key,
   AlertTriangle,
-  Mail
-} from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+  Mail,
+} from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
 const AdminLoginPage: React.FC = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [rememberDevice, setRememberDevice] = useState(false);
-  
+
   const [adminData, setAdminData] = useState({
-    email: '',
-    password: '',
-    securityCode: ''
+    email: "",
+    password: "",
+    securityCode: "",
   });
 
   const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simulate API call
+
+    // Simple credential check
     setTimeout(() => {
       setIsLoading(false);
-      console.log('Admin login:', adminData);
-      navigate('/admin/dashboard');
-    }, 2000);
+      if (
+        adminData.email === "test@gmail.com" &&
+        adminData.password === "test123"
+      ) {
+        navigate("/admin/dashboard");
+      } else {
+        alert(
+          "Invalid credentials. Use email: test@gmail.com, password: test123"
+        );
+      }
+    }, 1000);
   };
 
   return (
@@ -49,7 +57,7 @@ const AdminLoginPage: React.FC = () => {
           transition={{
             duration: 20,
             repeat: Infinity,
-            ease: "linear"
+            ease: "linear",
           }}
           className="absolute top-20 left-20 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"
         />
@@ -61,7 +69,7 @@ const AdminLoginPage: React.FC = () => {
           transition={{
             duration: 25,
             repeat: Infinity,
-            ease: "linear"
+            ease: "linear",
           }}
           className="absolute bottom-20 right-20 w-96 h-96 bg-pink-500/10 rounded-full blur-3xl"
         />
@@ -81,9 +89,9 @@ const AdminLoginPage: React.FC = () => {
               Admin Portal
             </span>
           </div>
-          
-          <Link 
-            to="/login" 
+
+          <Link
+            to="/login"
             className="flex items-center gap-2 text-purple-300 hover:text-pink-300 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -128,7 +136,8 @@ const AdminLoginPage: React.FC = () => {
                   Secure Admin Access
                 </p>
                 <p className="text-yellow-200/70 text-xs">
-                  All administrative activities are logged and monitored for security purposes.
+                  All administrative activities are logged and monitored for
+                  security purposes.
                 </p>
               </div>
             </div>
@@ -145,7 +154,9 @@ const AdminLoginPage: React.FC = () => {
                   <input
                     type="email"
                     value={adminData.email}
-                    onChange={(e) => setAdminData({ ...adminData, email: e.target.value })}
+                    onChange={(e) =>
+                      setAdminData({ ...adminData, email: e.target.value })
+                    }
                     placeholder="admin@beautysalon.com"
                     className="w-full bg-black/30 backdrop-blur-sm border border-purple-400/40 rounded-xl pl-12 pr-4 py-3 text-white placeholder-gray-500 focus:border-pink-500 focus:ring-2 focus:ring-pink-500/50 focus:outline-none transition-all"
                     required
@@ -164,9 +175,11 @@ const AdminLoginPage: React.FC = () => {
                     <Shield className="w-3 h-3 text-purple-400" />
                   </div>
                   <input
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
                     value={adminData.password}
-                    onChange={(e) => setAdminData({ ...adminData, password: e.target.value })}
+                    onChange={(e) =>
+                      setAdminData({ ...adminData, password: e.target.value })
+                    }
                     placeholder="Enter secure password"
                     className="w-full bg-black/30 backdrop-blur-sm border border-purple-400/40 rounded-xl pl-16 pr-12 py-3 text-white placeholder-gray-500 focus:border-pink-500 focus:ring-2 focus:ring-pink-500/50 focus:outline-none transition-all"
                     required
@@ -176,7 +189,11 @@ const AdminLoginPage: React.FC = () => {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
                   >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5" />
+                    ) : (
+                      <Eye className="w-5 h-5" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -184,14 +201,22 @@ const AdminLoginPage: React.FC = () => {
               {/* Security Code Field (2FA) */}
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Security Code <span className="text-gray-500 text-xs">(Optional - 2FA)</span>
+                  Security Code{" "}
+                  <span className="text-gray-500 text-xs">
+                    (Optional - 2FA)
+                  </span>
                 </label>
                 <div className="relative">
                   <Key className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-400" />
                   <input
                     type="text"
                     value={adminData.securityCode}
-                    onChange={(e) => setAdminData({ ...adminData, securityCode: e.target.value })}
+                    onChange={(e) =>
+                      setAdminData({
+                        ...adminData,
+                        securityCode: e.target.value,
+                      })
+                    }
                     placeholder="Enter 2FA code if enabled"
                     className="w-full bg-black/30 backdrop-blur-sm border border-purple-400/40 rounded-xl pl-12 pr-4 py-3 text-white placeholder-gray-500 focus:border-pink-500 focus:ring-2 focus:ring-pink-500/50 focus:outline-none transition-all"
                   />
@@ -207,11 +232,13 @@ const AdminLoginPage: React.FC = () => {
                     onChange={(e) => setRememberDevice(e.target.checked)}
                     className="sr-only"
                   />
-                  <div className={`w-5 h-5 rounded border-2 transition-all ${
-                    rememberDevice 
-                      ? 'bg-gradient-to-r from-purple-600 to-pink-700 border-transparent' 
-                      : 'border-purple-400/40 bg-black/30'
-                  }`}>
+                  <div
+                    className={`w-5 h-5 rounded border-2 transition-all ${
+                      rememberDevice
+                        ? "bg-gradient-to-r from-purple-600 to-pink-700 border-transparent"
+                        : "border-purple-400/40 bg-black/30"
+                    }`}
+                  >
                     {rememberDevice && (
                       <motion.svg
                         initial={{ scale: 0 }}
@@ -243,7 +270,11 @@ const AdminLoginPage: React.FC = () => {
                 {isLoading ? (
                   <motion.div
                     animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    transition={{
+                      duration: 1,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
                     className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
                   />
                 ) : (
@@ -273,8 +304,11 @@ const AdminLoginPage: React.FC = () => {
             className="mt-6 text-center"
           >
             <p className="text-gray-500 text-sm">
-              Authorized access only • Security contact:{' '}
-              <a href="mailto:security@beautysalon.com" className="text-purple-400 hover:text-pink-400 transition-colors">
+              Authorized access only • Security contact:{" "}
+              <a
+                href="mailto:security@beautysalon.com"
+                className="text-purple-400 hover:text-pink-400 transition-colors"
+              >
                 security@beautysalon.com
               </a>
             </p>

@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Mail, 
-  Lock, 
-  Eye, 
-  EyeOff, 
-  User, 
-  ArrowRight, 
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  User,
+  ArrowRight,
   Shield,
   Chrome,
   Facebook,
@@ -14,65 +14,105 @@ import {
   ArrowLeft,
   HelpCircle,
   Building2,
-  AlertTriangle
-} from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+  AlertTriangle,
+} from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { useUserAuth } from "../../hooks/useUserOperations";
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'customer' | 'owner' | 'admin'>('customer');
+  const { login } = useUserAuth();
+  const [activeTab, setActiveTab] = useState<"customer" | "owner" | "admin">(
+    "customer"
+  );
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const [customerForm, setCustomerForm] = useState({
-    email: '',
-    password: '',
-    rememberMe: false
+    email: "",
+    password: "",
+    rememberMe: false,
   });
-  
+
   const [ownerForm, setOwnerForm] = useState({
-    email: '',
-    password: '',
-    rememberDevice: false
+    email: "",
+    password: "",
+    rememberDevice: false,
   });
-  
+
   const [adminForm, setAdminForm] = useState({
-    email: '',
-    password: '',
-    rememberDevice: false
+    email: "",
+    password: "",
+    rememberDevice: false,
   });
 
   const handleCustomerLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      console.log('Customer login:', customerForm);
-      navigate('/profile'); // Navigate to customer profile
-    }, 1500);
+    // Simple credential check
+    setTimeout(async () => {
+      if (
+        customerForm.email === "test@gmail.com" &&
+        customerForm.password === "test123"
+      ) {
+        // Set authentication state with mock user
+        const mockUser = {
+          id: "test-user-1",
+          username: "Test User",
+          email: "test@gmail.com",
+        };
+
+        // Store in localStorage to persist across page navigation
+        localStorage.setItem("currentUser", JSON.stringify(mockUser));
+        localStorage.setItem("isAuthenticated", "true");
+
+        setIsLoading(false);
+        navigate("/profile");
+      } else {
+        setIsLoading(false);
+        alert(
+          "Invalid credentials. Use email: test@gmail.com, password: test123"
+        );
+      }
+    }, 1000);
   };
 
   const handleOwnerLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Simulate API call
+    // Simple credential check
     setTimeout(() => {
       setIsLoading(false);
-      console.log('Owner login:', ownerForm);
-      navigate('/owner/dashboard'); // Navigate to owner dashboard
-    }, 1500);
+      if (
+        ownerForm.email === "test@gmail.com" &&
+        ownerForm.password === "test123"
+      ) {
+        navigate("/owner/dashboard");
+      } else {
+        alert(
+          "Invalid credentials. Use email: test@gmail.com, password: test123"
+        );
+      }
+    }, 1000);
   };
 
   const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Simulate API call
+    // Simple credential check
     setTimeout(() => {
       setIsLoading(false);
-      console.log('Admin login:', adminForm);
-      navigate('/admin/dashboard'); // Navigate to admin dashboard
-    }, 1500);
+      if (
+        adminForm.email === "test@gmail.com" &&
+        adminForm.password === "test123"
+      ) {
+        navigate("/admin/dashboard");
+      } else {
+        alert(
+          "Invalid credentials. Use email: test@gmail.com, password: test123"
+        );
+      }
+    }, 1000);
   };
 
   return (
@@ -87,7 +127,7 @@ const LoginPage: React.FC = () => {
           transition={{
             duration: 20,
             repeat: Infinity,
-            ease: "linear"
+            ease: "linear",
           }}
           className="absolute top-20 left-20 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"
         />
@@ -99,7 +139,7 @@ const LoginPage: React.FC = () => {
           transition={{
             duration: 25,
             repeat: Infinity,
-            ease: "linear"
+            ease: "linear",
           }}
           className="absolute bottom-20 right-20 w-96 h-96 bg-pink-500/10 rounded-full blur-3xl"
         />
@@ -108,7 +148,10 @@ const LoginPage: React.FC = () => {
       {/* Header */}
       <header className="relative z-10 p-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-6 py-3 hover:bg-white/15 transition-all">
+          <Link
+            to="/"
+            className="flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-6 py-3 hover:bg-white/15 transition-all"
+          >
             <motion.div
               whileHover={{ rotate: 360 }}
               transition={{ duration: 0.6 }}
@@ -116,9 +159,12 @@ const LoginPage: React.FC = () => {
             />
             <span className="text-white font-bold text-xl">BeautySalon</span>
           </Link>
-          
+
           <div className="flex items-center gap-4">
-            <Link to="/" className="flex items-center gap-2 text-purple-300 hover:text-pink-300 transition-colors">
+            <Link
+              to="/"
+              className="flex items-center gap-2 text-purple-300 hover:text-pink-300 transition-colors"
+            >
               <ArrowLeft className="w-4 h-4" />
               <span>Back to Home</span>
             </Link>
@@ -142,12 +188,14 @@ const LoginPage: React.FC = () => {
             {/* Three-Tab Switcher */}
             <div className="relative flex gap-2 bg-white/5 rounded-2xl p-2 mb-8">
               <button
-                onClick={() => setActiveTab('customer')}
+                onClick={() => setActiveTab("customer")}
                 className={`relative z-10 flex-1 py-3 text-sm font-semibold rounded-xl transition-colors ${
-                  activeTab === 'customer' ? 'text-white' : 'text-gray-400 hover:text-white'
+                  activeTab === "customer"
+                    ? "text-white"
+                    : "text-gray-400 hover:text-white"
                 }`}
               >
-                {activeTab === 'customer' && (
+                {activeTab === "customer" && (
                   <motion.div
                     layoutId="activeTab"
                     className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl shadow-lg -z-10"
@@ -157,12 +205,14 @@ const LoginPage: React.FC = () => {
                 Customer
               </button>
               <button
-                onClick={() => setActiveTab('owner')}
+                onClick={() => setActiveTab("owner")}
                 className={`relative z-10 flex-1 py-3 text-sm font-semibold rounded-xl transition-colors ${
-                  activeTab === 'owner' ? 'text-white' : 'text-gray-400 hover:text-white'
+                  activeTab === "owner"
+                    ? "text-white"
+                    : "text-gray-400 hover:text-white"
                 }`}
               >
-                {activeTab === 'owner' && (
+                {activeTab === "owner" && (
                   <motion.div
                     layoutId="activeTab"
                     className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl shadow-lg -z-10"
@@ -172,12 +222,14 @@ const LoginPage: React.FC = () => {
                 Salon Owner
               </button>
               <button
-                onClick={() => setActiveTab('admin')}
+                onClick={() => setActiveTab("admin")}
                 className={`relative z-10 flex-1 py-3 text-sm font-semibold rounded-xl transition-colors ${
-                  activeTab === 'admin' ? 'text-white' : 'text-gray-400 hover:text-white'
+                  activeTab === "admin"
+                    ? "text-white"
+                    : "text-gray-400 hover:text-white"
                 }`}
               >
-                {activeTab === 'admin' && (
+                {activeTab === "admin" && (
                   <motion.div
                     layoutId="activeTab"
                     className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl shadow-lg -z-10"
@@ -190,7 +242,7 @@ const LoginPage: React.FC = () => {
 
             <AnimatePresence mode="wait">
               {/* CUSTOMER LOGIN FORM */}
-              {activeTab === 'customer' && (
+              {activeTab === "customer" && (
                 <motion.div
                   key="customer"
                   initial={{ opacity: 0, x: -20 }}
@@ -206,7 +258,9 @@ const LoginPage: React.FC = () => {
                     <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
                       Welcome Back
                     </h2>
-                    <p className="text-gray-400">Access your beauty appointments</p>
+                    <p className="text-gray-400">
+                      Access your beauty appointments
+                    </p>
                   </div>
 
                   {/* Customer Form */}
@@ -221,7 +275,12 @@ const LoginPage: React.FC = () => {
                         <input
                           type="email"
                           value={customerForm.email}
-                          onChange={(e) => setCustomerForm({ ...customerForm, email: e.target.value })}
+                          onChange={(e) =>
+                            setCustomerForm({
+                              ...customerForm,
+                              email: e.target.value,
+                            })
+                          }
                           placeholder="Enter your email"
                           className="w-full bg-white/5 backdrop-blur-sm border border-purple-400/30 rounded-xl pl-12 pr-4 py-3 text-white placeholder-gray-500 focus:border-pink-500 focus:ring-2 focus:ring-pink-500/50 focus:outline-none transition-all"
                           required
@@ -237,9 +296,14 @@ const LoginPage: React.FC = () => {
                       <div className="relative">
                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-400" />
                         <input
-                          type={showPassword ? 'text' : 'password'}
+                          type={showPassword ? "text" : "password"}
                           value={customerForm.password}
-                          onChange={(e) => setCustomerForm({ ...customerForm, password: e.target.value })}
+                          onChange={(e) =>
+                            setCustomerForm({
+                              ...customerForm,
+                              password: e.target.value,
+                            })
+                          }
                           placeholder="Enter your password"
                           className="w-full bg-white/5 backdrop-blur-sm border border-purple-400/30 rounded-xl pl-12 pr-12 py-3 text-white placeholder-gray-500 focus:border-pink-500 focus:ring-2 focus:ring-pink-500/50 focus:outline-none transition-all"
                           required
@@ -249,7 +313,11 @@ const LoginPage: React.FC = () => {
                           onClick={() => setShowPassword(!showPassword)}
                           className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
                         >
-                          {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                          {showPassword ? (
+                            <EyeOff className="w-5 h-5" />
+                          ) : (
+                            <Eye className="w-5 h-5" />
+                          )}
                         </button>
                       </div>
                     </div>
@@ -261,14 +329,21 @@ const LoginPage: React.FC = () => {
                           <input
                             type="checkbox"
                             checked={customerForm.rememberMe}
-                            onChange={(e) => setCustomerForm({ ...customerForm, rememberMe: e.target.checked })}
+                            onChange={(e) =>
+                              setCustomerForm({
+                                ...customerForm,
+                                rememberMe: e.target.checked,
+                              })
+                            }
                             className="sr-only"
                           />
-                          <div className={`w-5 h-5 rounded border-2 transition-all ${
-                            customerForm.rememberMe 
-                              ? 'bg-gradient-to-r from-purple-500 to-pink-600 border-transparent' 
-                              : 'border-purple-400/30 bg-white/5'
-                          }`}>
+                          <div
+                            className={`w-5 h-5 rounded border-2 transition-all ${
+                              customerForm.rememberMe
+                                ? "bg-gradient-to-r from-purple-500 to-pink-600 border-transparent"
+                                : "border-purple-400/30 bg-white/5"
+                            }`}
+                          >
                             {customerForm.rememberMe && (
                               <motion.svg
                                 initial={{ scale: 0 }}
@@ -288,7 +363,10 @@ const LoginPage: React.FC = () => {
                           Remember me
                         </span>
                       </label>
-                      <Link to="/forgot-password" className="text-sm text-purple-400 hover:text-pink-400 transition-colors">
+                      <Link
+                        to="/forgot-password"
+                        className="text-sm text-purple-400 hover:text-pink-400 transition-colors"
+                      >
                         Forgot Password?
                       </Link>
                     </div>
@@ -305,7 +383,11 @@ const LoginPage: React.FC = () => {
                         {isLoading ? (
                           <motion.div
                             animate={{ rotate: 360 }}
-                            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                            transition={{
+                              duration: 1,
+                              repeat: Infinity,
+                              ease: "linear",
+                            }}
                             className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
                           />
                         ) : (
@@ -315,7 +397,7 @@ const LoginPage: React.FC = () => {
                           </>
                         )}
                       </motion.button>
-                      
+
                       <motion.button
                         type="button"
                         whileHover={{ scale: 1.02 }}
@@ -332,15 +414,17 @@ const LoginPage: React.FC = () => {
                         <div className="w-full border-t border-white/10" />
                       </div>
                       <div className="relative flex justify-center text-sm">
-                        <span className="px-4 bg-transparent text-gray-400">Or continue with</span>
+                        <span className="px-4 bg-transparent text-gray-400">
+                          Or continue with
+                        </span>
                       </div>
                     </div>
 
                     <div className="grid grid-cols-3 gap-3">
                       {[
-                        { icon: Chrome, name: 'Google' },
-                        { icon: Facebook, name: 'Facebook' },
-                        { icon: Apple, name: 'Apple' }
+                        { icon: Chrome, name: "Google" },
+                        { icon: Facebook, name: "Facebook" },
+                        { icon: Apple, name: "Apple" },
                       ].map(({ icon: Icon, name }) => (
                         <motion.button
                           key={name}
@@ -358,7 +442,7 @@ const LoginPage: React.FC = () => {
               )}
 
               {/* SALON OWNER LOGIN FORM */}
-              {activeTab === 'owner' && (
+              {activeTab === "owner" && (
                 <motion.div
                   key="owner"
                   initial={{ opacity: 0, x: -20 }}
@@ -374,7 +458,9 @@ const LoginPage: React.FC = () => {
                     <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
                       Salon Owner Portal
                     </h2>
-                    <p className="text-gray-400">Manage your salon and appointments</p>
+                    <p className="text-gray-400">
+                      Manage your salon and appointments
+                    </p>
                   </div>
 
                   {/* Owner Form */}
@@ -389,7 +475,12 @@ const LoginPage: React.FC = () => {
                         <input
                           type="email"
                           value={ownerForm.email}
-                          onChange={(e) => setOwnerForm({ ...ownerForm, email: e.target.value })}
+                          onChange={(e) =>
+                            setOwnerForm({
+                              ...ownerForm,
+                              email: e.target.value,
+                            })
+                          }
                           placeholder="Enter your business email"
                           className="w-full bg-white/5 backdrop-blur-sm border border-purple-400/30 rounded-xl pl-12 pr-4 py-3 text-white placeholder-gray-500 focus:border-pink-500 focus:ring-2 focus:ring-pink-500/50 focus:outline-none transition-all"
                           required
@@ -405,9 +496,14 @@ const LoginPage: React.FC = () => {
                       <div className="relative">
                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-400" />
                         <input
-                          type={showPassword ? 'text' : 'password'}
+                          type={showPassword ? "text" : "password"}
                           value={ownerForm.password}
-                          onChange={(e) => setOwnerForm({ ...ownerForm, password: e.target.value })}
+                          onChange={(e) =>
+                            setOwnerForm({
+                              ...ownerForm,
+                              password: e.target.value,
+                            })
+                          }
                           placeholder="Enter your password"
                           className="w-full bg-white/5 backdrop-blur-sm border border-purple-400/30 rounded-xl pl-12 pr-12 py-3 text-white placeholder-gray-500 focus:border-pink-500 focus:ring-2 focus:ring-pink-500/50 focus:outline-none transition-all"
                           required
@@ -417,7 +513,11 @@ const LoginPage: React.FC = () => {
                           onClick={() => setShowPassword(!showPassword)}
                           className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
                         >
-                          {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                          {showPassword ? (
+                            <EyeOff className="w-5 h-5" />
+                          ) : (
+                            <Eye className="w-5 h-5" />
+                          )}
                         </button>
                       </div>
                     </div>
@@ -429,14 +529,21 @@ const LoginPage: React.FC = () => {
                           <input
                             type="checkbox"
                             checked={ownerForm.rememberDevice}
-                            onChange={(e) => setOwnerForm({ ...ownerForm, rememberDevice: e.target.checked })}
+                            onChange={(e) =>
+                              setOwnerForm({
+                                ...ownerForm,
+                                rememberDevice: e.target.checked,
+                              })
+                            }
                             className="sr-only"
                           />
-                          <div className={`w-5 h-5 rounded border-2 transition-all ${
-                            ownerForm.rememberDevice 
-                              ? 'bg-gradient-to-r from-purple-500 to-pink-600 border-transparent' 
-                              : 'border-purple-400/30 bg-white/5'
-                          }`}>
+                          <div
+                            className={`w-5 h-5 rounded border-2 transition-all ${
+                              ownerForm.rememberDevice
+                                ? "bg-gradient-to-r from-purple-500 to-pink-600 border-transparent"
+                                : "border-purple-400/30 bg-white/5"
+                            }`}
+                          >
                             {ownerForm.rememberDevice && (
                               <motion.svg
                                 initial={{ scale: 0 }}
@@ -456,7 +563,10 @@ const LoginPage: React.FC = () => {
                           Remember this device
                         </span>
                       </label>
-                      <Link to="/forgot-password" className="text-sm text-purple-400 hover:text-pink-400 transition-colors">
+                      <Link
+                        to="/forgot-password"
+                        className="text-sm text-purple-400 hover:text-pink-400 transition-colors"
+                      >
                         Forgot Password?
                       </Link>
                     </div>
@@ -473,7 +583,11 @@ const LoginPage: React.FC = () => {
                         {isLoading ? (
                           <motion.div
                             animate={{ rotate: 360 }}
-                            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                            transition={{
+                              duration: 1,
+                              repeat: Infinity,
+                              ease: "linear",
+                            }}
                             className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
                           />
                         ) : (
@@ -483,7 +597,7 @@ const LoginPage: React.FC = () => {
                           </>
                         )}
                       </motion.button>
-                      
+
                       <motion.button
                         type="button"
                         whileHover={{ scale: 1.02 }}
@@ -496,18 +610,18 @@ const LoginPage: React.FC = () => {
 
                     {/* Helper Text */}
                     <p className="text-sm text-center text-gray-400 mt-4">
-                      Don't have a salon account yet?{' '}
+                      Don't have a salon account yet?{" "}
                       <span className="text-purple-400 hover:text-pink-400 transition-colors cursor-pointer">
                         Register your salon
-                      </span>
-                      {' '}to get started
+                      </span>{" "}
+                      to get started
                     </p>
                   </form>
                 </motion.div>
               )}
 
               {/* ADMIN LOGIN FORM */}
-              {activeTab === 'admin' && (
+              {activeTab === "admin" && (
                 <motion.div
                   key="admin"
                   initial={{ opacity: 0, x: -20 }}
@@ -523,7 +637,9 @@ const LoginPage: React.FC = () => {
                     <h2 className="text-3xl font-bold bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent mb-2">
                       Administrator Portal
                     </h2>
-                    <p className="text-gray-400">Access platform management and controls</p>
+                    <p className="text-gray-400">
+                      Access platform management and controls
+                    </p>
                   </div>
 
                   {/* Security Warning */}
@@ -531,7 +647,8 @@ const LoginPage: React.FC = () => {
                     <div className="flex items-start gap-3">
                       <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
                       <p className="text-sm text-red-300">
-                        All admin activities are logged and monitored. Unauthorized access attempts will be reported.
+                        All admin activities are logged and monitored.
+                        Unauthorized access attempts will be reported.
                       </p>
                     </div>
                   </div>
@@ -548,7 +665,12 @@ const LoginPage: React.FC = () => {
                         <input
                           type="text"
                           value={adminForm.email}
-                          onChange={(e) => setAdminForm({ ...adminForm, email: e.target.value })}
+                          onChange={(e) =>
+                            setAdminForm({
+                              ...adminForm,
+                              email: e.target.value,
+                            })
+                          }
                           placeholder="Enter admin email or username"
                           className="w-full bg-white/5 backdrop-blur-sm border border-red-400/30 rounded-xl pl-12 pr-4 py-3 text-white placeholder-gray-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/50 focus:outline-none transition-all"
                           required
@@ -564,9 +686,14 @@ const LoginPage: React.FC = () => {
                       <div className="relative">
                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-red-400" />
                         <input
-                          type={showPassword ? 'text' : 'password'}
+                          type={showPassword ? "text" : "password"}
                           value={adminForm.password}
-                          onChange={(e) => setAdminForm({ ...adminForm, password: e.target.value })}
+                          onChange={(e) =>
+                            setAdminForm({
+                              ...adminForm,
+                              password: e.target.value,
+                            })
+                          }
                           placeholder="Enter admin password"
                           className="w-full bg-white/5 backdrop-blur-sm border border-red-400/30 rounded-xl pl-12 pr-12 py-3 text-white placeholder-gray-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/50 focus:outline-none transition-all"
                           required
@@ -576,7 +703,11 @@ const LoginPage: React.FC = () => {
                           onClick={() => setShowPassword(!showPassword)}
                           className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
                         >
-                          {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                          {showPassword ? (
+                            <EyeOff className="w-5 h-5" />
+                          ) : (
+                            <Eye className="w-5 h-5" />
+                          )}
                         </button>
                       </div>
                     </div>
@@ -588,14 +719,21 @@ const LoginPage: React.FC = () => {
                           <input
                             type="checkbox"
                             checked={adminForm.rememberDevice}
-                            onChange={(e) => setAdminForm({ ...adminForm, rememberDevice: e.target.checked })}
+                            onChange={(e) =>
+                              setAdminForm({
+                                ...adminForm,
+                                rememberDevice: e.target.checked,
+                              })
+                            }
                             className="sr-only"
                           />
-                          <div className={`w-5 h-5 rounded border-2 transition-all ${
-                            adminForm.rememberDevice 
-                              ? 'bg-gradient-to-r from-red-600 to-pink-700 border-transparent' 
-                              : 'border-red-400/30 bg-white/5'
-                          }`}>
+                          <div
+                            className={`w-5 h-5 rounded border-2 transition-all ${
+                              adminForm.rememberDevice
+                                ? "bg-gradient-to-r from-red-600 to-pink-700 border-transparent"
+                                : "border-red-400/30 bg-white/5"
+                            }`}
+                          >
                             {adminForm.rememberDevice && (
                               <motion.svg
                                 initial={{ scale: 0 }}
@@ -615,7 +753,10 @@ const LoginPage: React.FC = () => {
                           Remember this device
                         </span>
                       </label>
-                      <Link to="/forgot-password" className="text-sm text-red-400 hover:text-pink-400 transition-colors">
+                      <Link
+                        to="/forgot-password"
+                        className="text-sm text-red-400 hover:text-pink-400 transition-colors"
+                      >
                         Forgot Password?
                       </Link>
                     </div>
@@ -631,7 +772,11 @@ const LoginPage: React.FC = () => {
                       {isLoading ? (
                         <motion.div
                           animate={{ rotate: 360 }}
-                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                          transition={{
+                            duration: 1,
+                            repeat: Infinity,
+                            ease: "linear",
+                          }}
                           className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
                         />
                       ) : (
@@ -645,7 +790,8 @@ const LoginPage: React.FC = () => {
 
                     {/* Footer Text */}
                     <p className="text-xs text-center text-gray-500 mt-4">
-                      Administrator accounts are invite-only. Contact support for access.
+                      Administrator accounts are invite-only. Contact support
+                      for access.
                     </p>
                   </form>
                 </motion.div>
@@ -662,13 +808,22 @@ const LoginPage: React.FC = () => {
             � 2025 BeautySalon. All rights reserved.
           </p>
           <div className="flex items-center justify-center gap-6 text-sm">
-            <Link to="/privacy" className="text-purple-300 hover:text-pink-300 transition-colors">
+            <Link
+              to="/privacy"
+              className="text-purple-300 hover:text-pink-300 transition-colors"
+            >
               Privacy Policy
             </Link>
-            <Link to="/terms" className="text-purple-300 hover:text-pink-300 transition-colors">
+            <Link
+              to="/terms"
+              className="text-purple-300 hover:text-pink-300 transition-colors"
+            >
               Terms of Service
             </Link>
-            <Link to="/support" className="text-purple-300 hover:text-pink-300 transition-colors">
+            <Link
+              to="/support"
+              className="text-purple-300 hover:text-pink-300 transition-colors"
+            >
               Support
             </Link>
           </div>

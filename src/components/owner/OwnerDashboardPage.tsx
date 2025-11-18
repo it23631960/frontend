@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { 
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import {
   Home,
   Calendar,
   User,
@@ -9,15 +9,18 @@ import {
   ChevronDown,
   Bell,
   Menu,
-  X
-} from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
-import { OwnerDashboard } from './dashboard/OwnerDashboard';
+  X,
+} from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { OwnerDashboard } from "./dashboard/OwnerDashboard";
+import { AppointmentDashboard } from "../admin/appointments/AppointmentDashboard";
+import OwnerProfile from "./OwnerProfile";
+import OwnerSettings from "./OwnerSettings";
 
 const OwnerDashboardPage: React.FC = () => {
   const navigate = useNavigate();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const [activeNav, setActiveNav] = useState('dashboard');
+  const [activeNav, setActiveNav] = useState("dashboard");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Mock salon data
@@ -25,11 +28,41 @@ const OwnerDashboardPage: React.FC = () => {
   const ownerName = "Sarah Johnson";
 
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: Home, path: '/owner/dashboard' },
-    { id: 'appointments', label: 'Appointments', icon: Calendar, path: '/owner/appointments' },
-    { id: 'profile', label: 'Profile', icon: User, path: '/owner/profile' },
-    { id: 'settings', label: 'Settings', icon: Settings, path: '/owner/settings' }
+    {
+      id: "dashboard",
+      label: "Dashboard",
+      icon: Home,
+      path: "/owner/dashboard",
+    },
+    {
+      id: "appointments",
+      label: "Appointments",
+      icon: Calendar,
+      path: "/owner/appointments",
+    },
+    { id: "profile", label: "Profile", icon: User, path: "/owner/profile" },
+    {
+      id: "settings",
+      label: "Settings",
+      icon: Settings,
+      path: "/owner/settings",
+    },
   ];
+
+  const renderContent = () => {
+    switch (activeNav) {
+      case "dashboard":
+        return <OwnerDashboard />;
+      case "appointments":
+        return <AppointmentDashboard />;
+      case "profile":
+        return <OwnerProfile />;
+      case "settings":
+        return <OwnerSettings />;
+      default:
+        return <OwnerDashboard />;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-950 via-black to-pink-950">
@@ -46,8 +79,12 @@ const OwnerDashboardPage: React.FC = () => {
                   className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl"
                 />
                 <div>
-                  <span className="text-white font-bold text-xl hidden sm:block">BeautySalon</span>
-                  <span className="text-purple-300 text-xs font-medium">{salonName}</span>
+                  <span className="text-white font-bold text-xl hidden sm:block">
+                    BeautySalon
+                  </span>
+                  <span className="text-purple-300 text-xs font-medium">
+                    {salonName}
+                  </span>
                 </div>
               </Link>
             </div>
@@ -58,12 +95,13 @@ const OwnerDashboardPage: React.FC = () => {
                 const Icon = item.icon;
                 const isActive = activeNav === item.id;
                 return (
-                  <Link
+                  <button
                     key={item.id}
-                    to={item.path}
                     onClick={() => setActiveNav(item.id)}
                     className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all relative ${
-                      isActive ? 'text-pink-400' : 'text-gray-400 hover:text-purple-300'
+                      isActive
+                        ? "text-pink-400"
+                        : "text-gray-400 hover:text-purple-300"
                     }`}
                   >
                     <Icon className="w-5 h-5" />
@@ -74,7 +112,7 @@ const OwnerDashboardPage: React.FC = () => {
                         className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-600"
                       />
                     )}
-                  </Link>
+                  </button>
                 );
               })}
             </div>
@@ -95,7 +133,10 @@ const OwnerDashboardPage: React.FC = () => {
                 >
                   <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
                     <span className="text-white font-semibold text-sm">
-                      {ownerName.split(' ').map(n => n[0]).join('')}
+                      {ownerName
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")}
                     </span>
                   </div>
                   <span className="text-white font-medium">{ownerName}</span>
@@ -123,7 +164,7 @@ const OwnerDashboardPage: React.FC = () => {
                       <span>Settings</span>
                     </Link>
                     <button
-                      onClick={() => navigate('/login')}
+                      onClick={() => navigate("/login")}
                       className="w-full flex items-center gap-3 px-4 py-3 text-gray-300 hover:text-white hover:bg-white/10 transition-all border-t border-white/10"
                     >
                       <LogOut className="w-4 h-4" />
@@ -138,7 +179,11 @@ const OwnerDashboardPage: React.FC = () => {
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="md:hidden p-2 text-gray-400 hover:text-white transition-colors"
               >
-                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                {mobileMenuOpen ? (
+                  <X className="w-6 h-6" />
+                ) : (
+                  <Menu className="w-6 h-6" />
+                )}
               </button>
             </div>
           </div>
@@ -147,30 +192,31 @@ const OwnerDashboardPage: React.FC = () => {
           {mobileMenuOpen && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
+              animate={{ opacity: 1, height: "auto" }}
               className="md:hidden border-t border-white/10 py-4"
             >
               {navItems.map((item) => {
                 const Icon = item.icon;
                 return (
-                  <Link
+                  <button
                     key={item.id}
-                    to={item.path}
                     onClick={() => {
                       setActiveNav(item.id);
                       setMobileMenuOpen(false);
                     }}
                     className={`flex items-center gap-3 px-4 py-3 ${
-                      activeNav === item.id ? 'text-pink-400 bg-white/10' : 'text-gray-400'
+                      activeNav === item.id
+                        ? "text-pink-400 bg-white/10"
+                        : "text-gray-400"
                     }`}
                   >
                     <Icon className="w-5 h-5" />
                     <span>{item.label}</span>
-                  </Link>
+                  </button>
                 );
               })}
               <button
-                onClick={() => navigate('/login')}
+                onClick={() => navigate("/login")}
                 className="flex items-center gap-3 px-4 py-3 text-gray-400 w-full border-t border-white/10 mt-2"
               >
                 <LogOut className="w-5 h-5" />
@@ -182,7 +228,7 @@ const OwnerDashboardPage: React.FC = () => {
       </nav>
 
       {/* Main Dashboard Content */}
-      <OwnerDashboard />
+      {renderContent()}
     </div>
   );
 };
