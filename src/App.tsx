@@ -23,7 +23,7 @@ export function App() {
             title="Hair Salons"
             description="Professional hair care and styling"
             buttonText="Find Hair Salons"
-            videoSrc="https://youtu.be/KFC7JVEq5fM"
+            videoSrc="/videos/hair-salon-services.mp4"
             align="left"
             services={["Haircuts", "Coloring", "Styling", "Treatments"]}
             onButtonClick={handleHairSalonClick}
@@ -33,7 +33,7 @@ export function App() {
             title="Barber Shops"
             description="Traditional and modern men's grooming"
             buttonText="Find Barber Shops"
-            videoSrc="https://youtu.be/SK7mvPqnqkQ"
+            videoSrc="/videos/barber-shop-grooming.mp4"
             align="right"
             services={["Haircuts", "Beard Care", "Hot Towel Shaves", "Styling"]}
           />
@@ -42,7 +42,7 @@ export function App() {
             title="Nail Salons"
             description="Complete nail care and artistry"
             buttonText="Find Nail Salons"
-            videoSrc="https://youtu.be/HvkiPvs8daE"
+            videoSrc="/videos/nail-salon-artistry.mp4"
             align="center"
             services={["Manicures", "Pedicures", "Nail Art", "Gel Extensions"]}
           />
@@ -51,7 +51,7 @@ export function App() {
             title="Bridal Salons"
             description="Make your special day perfect"
             buttonText="Find Bridal Services"
-            videoSrc="https://youtu.be/h3C0BQQpHfo"
+            videoSrc="/videos/bridal-salon-makeup.mp4"
             align="left"
             services={[
               "Bridal Makeup",
