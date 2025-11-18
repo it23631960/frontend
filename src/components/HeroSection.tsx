@@ -27,7 +27,7 @@ export const HeroSection = () => {
       }}
     >
       <VideoBackground
-        videoSrc="https://youtu.be/KFC7JVEq5fM"
+        videoSrc="/videos/hero-salon-overview.mp4"
         priority={true}
       />
       <motion.div
