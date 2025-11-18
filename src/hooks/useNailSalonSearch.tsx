@@ -1,7 +1,6 @@
 import { useState, useCallback, useRef } from "react";
 import { Salon, FilterState } from "../components/HairSalonListing";
 import {
-  salonApiService,
   mapBackendSalonToDisplaySalon,
   ApiServiceError,
 } from "../services/salonApiService";
@@ -9,22 +8,20 @@ import { useNotification } from "../services/NotificationService";
 import { buildApiUrl, API_CONFIG } from "../config/api";
 import { BackendSalon } from "../services/types";
 
-const API_BASE_URL = buildApiUrl(API_CONFIG.ENDPOINTS.HAIR_SALONS);
+const API_BASE_URL = buildApiUrl(API_CONFIG.ENDPOINTS.NAIL_SALONS);
 
-export const useSalonSearch = () => {
+export const useNailSalonSearch = () => {
   const [salons, setSalons] = useState<Salon[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { showNotification } = useNotification();
 
-  // ✅ FIX #1: Track if data has been loaded to prevent duplicate notifications
   const hasLoadedRef = useRef(false);
 
   const filterSalons = useCallback(
     (allSalons: Salon[], filters: FilterState): Salon[] => {
       return allSalons.filter((salon) => {
-        // Filter by services
         if (filters.services.length > 0) {
           const hasService = filters.services.some((service) =>
             salon.services.some((salonService) =>
@@ -34,32 +31,22 @@ export const useSalonSearch = () => {
           if (!hasService) return false;
         }
 
-        // Filter by price range
         if (filters.priceRange.length > 0) {
           if (!filters.priceRange.includes(salon.priceRange)) return false;
         }
 
-        // Filter by rating
         if (filters.rating > 0) {
           if (salon.rating < filters.rating) return false;
         }
 
-        // Filter by availability
         if (filters.availability) {
           switch (filters.availability) {
             case "Open Now":
               if (!salon.isOpen) return false;
               break;
-            case "Same Day Booking":
-            case "This Week":
-            case "Accepts Walk-ins":
-            case "Online Booking":
-              // These would require additional data in real implementation
-              break;
           }
         }
 
-        // Filter by specialties
         if (filters.specialties.length > 0) {
           const hasSpecialty = filters.specialties.some((specialty) =>
             salon.specialties.some((salonSpecialty) =>
@@ -115,94 +102,33 @@ export const useSalonSearch = () => {
     }
   }, []);
 
-  // Load all salons from API
-  const loadSalons = useCallback(async () => {
-    // ✅ FIX #2: Prevent duplicate loads if already loading
-    if (isLoading) return;
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch(API_BASE_URL);
-      if (!response.ok) {
-        throw new ApiServiceError(
-          response.status,
-          "Failed to fetch hair salons"
-        );
-      }
-
-      const backendSalons: BackendSalon[] = await response.json();
-      const displaySalons = backendSalons.map(mapBackendSalonToDisplaySalon);
-
-      setSalons(displaySalons);
-      setTotalCount(displaySalons.length);
-
-      // ✅ FIX #3: Only show notification on first load
-      if (!hasLoadedRef.current) {
-        showNotification({
-          type: "success",
-          title: "Hair Salons Loaded",
-          message: `Found ${displaySalons.length} hair salon(s)`,
-          duration: 3000,
-        });
-        hasLoadedRef.current = true;
-      }
-    } catch (error) {
-      const errorMessage =
-        error instanceof ApiServiceError
-          ? error.message
-          : "Failed to load hair salons";
-
-      setError(errorMessage);
-      setSalons([]);
-      setTotalCount(0);
-
-      showNotification({
-        type: "error",
-        title: "Loading Failed",
-        message: errorMessage,
-        duration: 5000,
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  }, [isLoading]); // ✅ FIX #4: Remove showNotification from dependencies
-
   const searchSalons = useCallback(
     async (location: string, filters: FilterState, sortBy: string) => {
-      // ✅ FIX #5: Prevent duplicate searches if already loading
       if (isLoading) return;
 
       setIsLoading(true);
       setError(null);
 
       try {
-        // First, get all salons from API
         const response = await fetch(API_BASE_URL);
         if (!response.ok) {
           throw new ApiServiceError(
             response.status,
-            "Failed to fetch hair salons"
+            "Failed to fetch nail salons"
           );
         }
 
         const backendSalons: BackendSalon[] = await response.json();
         let displaySalons = backendSalons.map(mapBackendSalonToDisplaySalon);
 
-        // Apply filters
         displaySalons = filterSalons(displaySalons, filters);
 
-        // Apply location filtering if needed
         if (location.trim()) {
-          // In a real implementation, you might filter by coordinates or city
-          // For now, we'll filter by address containing the location
           displaySalons = displaySalons.filter((salon) =>
             salon.address.toLowerCase().includes(location.toLowerCase())
           );
         }
 
-        // Sort the results
         displaySalons = sortSalons(displaySalons, sortBy);
 
         setSalons(displaySalons);
@@ -212,7 +138,7 @@ export const useSalonSearch = () => {
           showNotification({
             type: "info",
             title: "No Results",
-            message: "No hair salons match your search criteria",
+            message: "No nail salons match your search criteria",
             duration: 3000,
           });
         }
@@ -220,7 +146,7 @@ export const useSalonSearch = () => {
         const errorMessage =
           error instanceof ApiServiceError
             ? error.message
-            : "Failed to search hair salons";
+            : "Failed to search nail salons";
 
         setError(errorMessage);
         setSalons([]);
@@ -237,12 +163,9 @@ export const useSalonSearch = () => {
       }
     },
     [filterSalons, sortSalons, isLoading]
-  ); // ✅ FIX #6: Remove showNotification from dependencies
+  );
 
-  // Initialize with default data from API
-  // ✅ FIX #7: Stable callback that doesn't depend on loadSalons
   const initializeData = useCallback(async () => {
-    // ✅ Prevent duplicate initialization
     if (hasLoadedRef.current || isLoading) return;
 
     setIsLoading(true);
@@ -253,7 +176,7 @@ export const useSalonSearch = () => {
       if (!response.ok) {
         throw new ApiServiceError(
           response.status,
-          "Failed to fetch hair salons"
+          "Failed to fetch nail salons"
         );
       }
 
@@ -263,11 +186,10 @@ export const useSalonSearch = () => {
       setSalons(displaySalons);
       setTotalCount(displaySalons.length);
 
-      // Show success notification only once
       showNotification({
         type: "success",
-        title: "Hair Salons Loaded",
-        message: `Found ${displaySalons.length} hair salon(s)`,
+        title: "Nail Salons Loaded",
+        message: `Found ${displaySalons.length} nail salon(s)`,
         duration: 3000,
       });
 
@@ -276,7 +198,7 @@ export const useSalonSearch = () => {
       const errorMessage =
         error instanceof ApiServiceError
           ? error.message
-          : "Failed to load hair salons";
+          : "Failed to load nail salons";
 
       setError(errorMessage);
       setSalons([]);
@@ -291,7 +213,7 @@ export const useSalonSearch = () => {
     } finally {
       setIsLoading(false);
     }
-  }, []); // ✅ FIX #8: Empty dependency array - this callback is stable!
+  }, []);
 
   return {
     salons,
@@ -300,6 +222,5 @@ export const useSalonSearch = () => {
     error,
     searchSalons,
     initializeData,
-    loadSalons,
   };
 };

@@ -1,6 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { App } from "./App";
 import HairSalonListing from "./components/HairSalonListing";
+import BarberShopListing from "./components/BarberShopListing";
+import NailSalonListing from "./components/NailSalonListing";
+import BridalSalonListing from "./components/BridalSalonListing";
 import UserProfile from "./components/UserProfile";
 import AppointmentBooking from "./components/AppointmentBooking";
 import LoginPage from "./components/auth/LoginPage";
@@ -18,6 +21,9 @@ export function AppRouter() {
         <Routes>
           <Route path="/" element={<App />} />
           <Route path="/hair-salons" element={<HairSalonListing />} />
+          <Route path="/barber-shops" element={<BarberShopListing />} />
+          <Route path="/nail-salons" element={<NailSalonListing />} />
+          <Route path="/bridal-salons" element={<BridalSalonListing />} />
           <Route path="/salon/:salonId/book" element={<AppointmentBooking />} />
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/login" element={<LoginPage />} />

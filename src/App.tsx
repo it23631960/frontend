@@ -12,6 +12,18 @@ export function App() {
     navigate("/hair-salons");
   };
 
+  const handleBarberShopClick = () => {
+    navigate("/barber-shops");
+  };
+
+  const handleNailSalonClick = () => {
+    navigate("/nail-salons");
+  };
+
+  const handleBridalSalonClick = () => {
+    navigate("/bridal-salons");
+  };
+
   return (
     <ErrorBoundary>
       <div className="relative bg-gradient-to-b from-purple-900 to-pink-900 text-white font-[Inter] overflow-x-hidden">
@@ -36,6 +48,7 @@ export function App() {
             videoSrc="/videos/barber-shop-grooming.mp4"
             align="right"
             services={["Haircuts", "Beard Care", "Hot Towel Shaves", "Styling"]}
+            onButtonClick={handleBarberShopClick}
           />
           <SalonSection
             id="nail"
@@ -45,6 +58,7 @@ export function App() {
             videoSrc="/videos/nail-salon-artistry.mp4"
             align="center"
             services={["Manicures", "Pedicures", "Nail Art", "Gel Extensions"]}
+            onButtonClick={handleNailSalonClick}
           />
           <SalonSection
             id="bridal"
@@ -59,6 +73,7 @@ export function App() {
               "Wedding Packages",
               "Trials",
             ]}
+            onButtonClick={handleBridalSalonClick}
           />
         </main>
         <Footer />
