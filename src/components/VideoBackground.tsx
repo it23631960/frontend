@@ -11,6 +11,23 @@ export const VideoBackground: React.FC<VideoBackgroundProps> = ({
   videoSrc,
   priority = false
 }) => {
+  // Detect YouTube URLs and extract ID for iframe embed
+  const isYouTubeUrl = (url: string) => /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//i.test(url);
+  const getYouTubeId = (url: string): string | null => {
+    try {
+      // youtu.be/<id>
+      const shortMatch = url.match(/youtu\.be\/([a-zA-Z0-9_-]{6,})/);
+      if (shortMatch) return shortMatch[1];
+      // youtube.com/watch?v=<id>
+      const vParam = new URL(url).searchParams.get('v');
+      if (vParam) return vParam;
+      // youtube.com/embed/<id>
+      const embedMatch = url.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]{6,})/);
+      if (embedMatch) return embedMatch[1];
+    } catch {}
+    return null;
+  };
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const [ref, inView] = useInView({
     threshold: 0.3,
@@ -62,7 +79,7 @@ export const VideoBackground: React.FC<VideoBackgroundProps> = ({
     };
   }, []);
 
-  // Control video playback based on scroll direction and visibility
+  // Control video playback based on scroll direction and visibility (MP4 only)
   useEffect(() => {
     const videoElement = videoRef.current;
     if (!videoElement) return;
@@ -142,18 +159,46 @@ export const VideoBackground: React.FC<VideoBackgroundProps> = ({
       {/* Subtle backdrop blur */}
       <div className="absolute inset-0 backdrop-blur-[2px] z-[5]" />
       
-      <video 
-        ref={videoRef} 
-        className="absolute object-cover w-full h-full" 
-        playsInline 
-        muted 
-        loop 
-        preload={priority ? 'auto' : 'metadata'} 
-        poster="/videos/placeholder.jpg"
-      >
-        <source src={videoSrc} type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+      {isYouTubeUrl(videoSrc) ? (
+        // YouTube background via iframe (autoplay, muted, loop)
+        <iframe
+          className="absolute object-cover w-full h-full pointer-events-none"
+          src={((): string => {
+            const id = getYouTubeId(videoSrc);
+            if (!id) return '';
+            const params = new URLSearchParams({
+              autoplay: '1',
+              mute: '1',
+              controls: '0',
+              showinfo: '0',
+              modestbranding: '1',
+              loop: '1',
+              playlist: id,
+              playsinline: '1',
+              rel: '0'
+            });
+            return `https://www.youtube.com/embed/${id}?${params.toString()}`;
+          })()}
+          title="Background video"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowFullScreen
+          loading={priority ? 'eager' : 'lazy'}
+          frameBorder={0}
+        />
+      ) : (
+        <video 
+          ref={videoRef} 
+          className="absolute object-cover w-full h-full" 
+          playsInline 
+          muted 
+          loop 
+          preload={priority ? 'auto' : 'metadata'} 
+          poster="/videos/placeholder.jpg"
+        >
+          <source src={videoSrc} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      )}
       
       {/* Visual indicator for scroll direction */}
       {inView && isScrolling && scrollDirection && (

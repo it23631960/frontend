@@ -23,7 +23,7 @@ export const HeroSection = () => {
   return <motion.section ref={sectionRef} className="relative h-screen flex items-center justify-center overflow-hidden" style={{
     scale
   }}>
-      <VideoBackground videoSrc="/videos/hero-salon-overview.mp4" priority={true} />
+      <VideoBackground videoSrc="https://youtu.be/KFC7JVEq5fM" priority={true} />
       <motion.div className="relative z-10 container mx-auto px-4 text-center" style={{
       opacity
     }}>
