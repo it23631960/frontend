@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowLeft, Filter, Grid, List, SlidersHorizontal } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import SearchBar from './SearchBar';
-import FilterSidebar from './FilterSidebar';
-import SalonCard from './SalonCard';
-import ResultsSummary from './ResultsSummary';
-import { SalonCardSkeleton } from './LoadingComponents';
-import { useSalonSearch } from '../hooks/useSalonSearch';
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { ArrowLeft, Filter, Grid, List, SlidersHorizontal } from "lucide-react";
+import { Link } from "react-router-dom";
+import SearchBar from "./SearchBar";
+import FilterSidebar from "./FilterSidebar";
+import SalonCard from "./SalonCard";
+import ResultsSummary from "./ResultsSummary";
+import { SalonCardSkeleton } from "./LoadingComponents";
+import { useSalonSearch } from "../hooks/useSalonSearch";
 
 export interface Salon {
   id: string;
@@ -36,20 +36,21 @@ export interface FilterState {
 }
 
 const HairSalonListing: React.FC = () => {
-  const [location, setLocation] = useState('');
+  const [location, setLocation] = useState("");
   const [filters, setFilters] = useState<FilterState>({
     services: [],
     priceRange: [],
     rating: 0,
-    availability: '',
+    availability: "",
     specialties: [],
-    searchRadius: 10
+    searchRadius: 10,
   });
-  const [sortBy, setSortBy] = useState('distance');
-  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
+  const [sortBy, setSortBy] = useState("distance");
+  const [viewMode, setViewMode] = useState<"list" | "grid">("list");
   const [showFilters, setShowFilters] = useState(false);
 
-  const { salons, searchSalons, totalCount, initializeData, isLoading } = useSalonSearch();
+  const { salons, searchSalons, totalCount, initializeData, isLoading } =
+    useSalonSearch();
 
   // ✅ FIX #9: Initialize data only once on mount
   useEffect(() => {
@@ -60,23 +61,31 @@ const HairSalonListing: React.FC = () => {
   // Debounce or only trigger on user action, not on every render
   useEffect(() => {
     // Only search if user has set filters (not on initial mount)
-    const hasFilters = location || 
-      filters.services.length > 0 || 
-      filters.priceRange.length > 0 || 
-      filters.rating > 0 || 
-      filters.availability || 
+    const hasFilters =
+      location ||
+      filters.services.length > 0 ||
+      filters.priceRange.length > 0 ||
+      filters.rating > 0 ||
+      filters.availability ||
       filters.specialties.length > 0;
-    
+
     if (hasFilters) {
       searchSalons(location, filters, sortBy);
     }
-  }, [location, filters.services, filters.priceRange, filters.rating, 
-      filters.availability, filters.specialties, sortBy]); 
+  }, [
+    location,
+    filters.services,
+    filters.priceRange,
+    filters.rating,
+    filters.availability,
+    filters.specialties,
+    sortBy,
+  ]);
   // ✅ FIX #11: Removed searchSalons from dependencies - it's stable now
   // ✅ FIX #12: Destructured filters to specific properties to prevent unnecessary re-renders
 
   const handleFilterChange = (newFilters: Partial<FilterState>) => {
-    setFilters(prev => ({ ...prev, ...newFilters }));
+    setFilters((prev) => ({ ...prev, ...newFilters }));
   };
 
   const handleLocationChange = (newLocation: string) => {
@@ -87,7 +96,7 @@ const HairSalonListing: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-pink-900">
       {/* Fixed Header */}
-      <motion.header 
+      <motion.header
         className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-lg border-b border-purple-500/20"
         initial={{ y: -100 }}
         animate={{ y: 0 }}
@@ -97,8 +106,8 @@ const HairSalonListing: React.FC = () => {
           <div className="flex items-center justify-between h-16">
             {/* Logo and Back Button */}
             <div className="flex items-center space-x-4">
-              <Link 
-                to="/" 
+              <Link
+                to="/"
                 className="flex items-center space-x-2 text-white hover:text-purple-300 transition-colors"
               >
                 <ArrowLeft className="w-5 h-5" />
@@ -120,14 +129,22 @@ const HairSalonListing: React.FC = () => {
 
               <div className="flex items-center bg-white/10 backdrop-blur-md rounded-lg border border-white/20 overflow-hidden">
                 <button
-                  onClick={() => setViewMode('list')}
-                  className={`p-2 transition-colors ${viewMode === 'list' ? 'bg-purple-500 text-white' : 'text-gray-300 hover:text-white'}`}
+                  onClick={() => setViewMode("list")}
+                  className={`p-2 transition-colors ${
+                    viewMode === "list"
+                      ? "bg-purple-500 text-white"
+                      : "text-gray-300 hover:text-white"
+                  }`}
                 >
                   <List className="w-4 h-4" />
                 </button>
                 <button
-                  onClick={() => setViewMode('grid')}
-                  className={`p-2 transition-colors ${viewMode === 'grid' ? 'bg-purple-500 text-white' : 'text-gray-300 hover:text-white'}`}
+                  onClick={() => setViewMode("grid")}
+                  className={`p-2 transition-colors ${
+                    viewMode === "grid"
+                      ? "bg-purple-500 text-white"
+                      : "text-gray-300 hover:text-white"
+                  }`}
                 >
                   <Grid className="w-4 h-4" />
                 </button>
@@ -148,7 +165,7 @@ const HairSalonListing: React.FC = () => {
       {/* Main Content */}
       <div className="pt-16">
         {/* Hero Search Section */}
-        <motion.section 
+        <motion.section
           className="bg-gradient-to-r from-purple-900/40 to-pink-900/40 py-12 px-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -169,11 +186,13 @@ const HairSalonListing: React.FC = () => {
               </p>
             </motion.div>
 
-            <SearchBar 
+            <SearchBar
               location={location}
               onLocationChange={handleLocationChange}
               searchRadius={filters.searchRadius}
-              onRadiusChange={(radius: number) => handleFilterChange({ searchRadius: radius })}
+              onRadiusChange={(radius: number) =>
+                handleFilterChange({ searchRadius: radius })
+              }
             />
           </div>
         </motion.section>
@@ -194,7 +213,7 @@ const HairSalonListing: React.FC = () => {
               {/* Results Summary */}
               <ResultsSummary
                 totalCount={totalCount}
-                location={location || 'your area'}
+                location={location || "your area"}
                 sortBy={sortBy}
                 onSortChange={setSortBy}
                 viewMode={viewMode}
@@ -202,11 +221,11 @@ const HairSalonListing: React.FC = () => {
               />
 
               {/* Salon Listings */}
-              <motion.div 
+              <motion.div
                 className={`${
-                  viewMode === 'grid' 
-                    ? 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6' 
-                    : 'space-y-6'
+                  viewMode === "grid"
+                    ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+                    : "space-y-6"
                 } mt-6`}
                 layout
               >
@@ -230,7 +249,7 @@ const HairSalonListing: React.FC = () => {
 
               {/* Load More Button */}
               {!isLoading && salons.length > 0 && (
-                <motion.div 
+                <motion.div
                   className="text-center mt-12"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -238,7 +257,10 @@ const HairSalonListing: React.FC = () => {
                 >
                   <motion.button
                     className="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform transition-all duration-300"
-                    whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(168, 85, 247, 0.4)" }}
+                    whileHover={{
+                      scale: 1.05,
+                      boxShadow: "0 0 30px rgba(168, 85, 247, 0.4)",
+                    }}
                     whileTap={{ scale: 0.95 }}
                   >
                     Load More Salons

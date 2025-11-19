@@ -342,7 +342,9 @@ export const bookingApiService = {
     const base = API_BASE_URL.endsWith("/api")
       ? API_BASE_URL
       : `${API_BASE_URL}/api`;
-    const response = await apiRequest<any>(`${base}/appointments/confirmation/${confirmationCode}`);
+    const response = await apiRequest<any>(
+      `${base}/appointments/confirmation/${confirmationCode}`
+    );
 
     return {
       id: response.id,

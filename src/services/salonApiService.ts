@@ -1,5 +1,5 @@
-import { BackendSalon, CreateSalonRequest, UpdateSalonRequest } from './types';
-import { buildApiUrl, DEFAULT_HEADERS, API_CONFIG } from '../config/api';
+import { BackendSalon, CreateSalonRequest, UpdateSalonRequest } from "./types";
+import { buildApiUrl, DEFAULT_HEADERS, API_CONFIG } from "../config/api";
 
 // Base configuration
 const API_BASE_URL = buildApiUrl(API_CONFIG.ENDPOINTS.SALONS);
@@ -8,7 +8,7 @@ const API_BASE_URL = buildApiUrl(API_CONFIG.ENDPOINTS.SALONS);
 export class ApiServiceError extends Error {
   constructor(public status: number, message: string, public code?: string) {
     super(message);
-    this.name = 'ApiServiceError';
+    this.name = "ApiServiceError";
   }
 }
 
@@ -28,16 +28,19 @@ async function apiRequest<T>(
 
     // Handle different HTTP status codes
     if (response.status === 404) {
-      throw new ApiServiceError(404, 'Salon not found');
+      throw new ApiServiceError(404, "Salon not found");
     }
 
     if (response.status === 400) {
       const errorData = await response.json().catch(() => ({}));
-      throw new ApiServiceError(400, errorData.message || 'Invalid request data');
+      throw new ApiServiceError(
+        400,
+        errorData.message || "Invalid request data"
+      );
     }
 
     if (response.status === 500) {
-      throw new ApiServiceError(500, 'Server error. Please try again later.');
+      throw new ApiServiceError(500, "Server error. Please try again later.");
     }
 
     if (!response.ok) {
@@ -56,17 +59,20 @@ async function apiRequest<T>(
     return data;
   } catch (error) {
     // Handle network errors
-    if (error instanceof TypeError && error.message.includes('fetch')) {
-      throw new ApiServiceError(0, 'Network error. Please check your connection.');
+    if (error instanceof TypeError && error.message.includes("fetch")) {
+      throw new ApiServiceError(
+        0,
+        "Network error. Please check your connection."
+      );
     }
-    
+
     // Re-throw API errors
     if (error instanceof ApiServiceError) {
       throw error;
     }
 
     // Handle other errors
-    throw new ApiServiceError(500, 'An unexpected error occurred');
+    throw new ApiServiceError(500, "An unexpected error occurred");
   }
 }
 
@@ -77,7 +83,7 @@ export const salonApiService = {
    */
   async getAllSalons(): Promise<BackendSalon[]> {
     return apiRequest<BackendSalon[]>(API_BASE_URL, {
-      method: 'GET',
+      method: "GET",
     });
   },
 
@@ -86,7 +92,7 @@ export const salonApiService = {
    */
   async getSalonById(id: string): Promise<BackendSalon> {
     return apiRequest<BackendSalon>(`${API_BASE_URL}/${id}`, {
-      method: 'GET',
+      method: "GET",
     });
   },
 
@@ -95,7 +101,7 @@ export const salonApiService = {
    */
   async createSalon(salonData: CreateSalonRequest): Promise<BackendSalon> {
     return apiRequest<BackendSalon>(API_BASE_URL, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(salonData),
     });
   },
@@ -103,9 +109,12 @@ export const salonApiService = {
   /**
    * Update an existing salon
    */
-  async updateSalon(id: string, salonData: UpdateSalonRequest): Promise<BackendSalon> {
+  async updateSalon(
+    id: string,
+    salonData: UpdateSalonRequest
+  ): Promise<BackendSalon> {
     return apiRequest<BackendSalon>(`${API_BASE_URL}/${id}`, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(salonData),
     });
   },
@@ -115,34 +124,39 @@ export const salonApiService = {
    */
   async deleteSalon(id: string): Promise<void> {
     return apiRequest<void>(`${API_BASE_URL}/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
   },
 };
 
 // Utility function to convert backend salon to frontend display format
-export function mapBackendSalonToDisplaySalon(backendSalon: BackendSalon): import('../components/HairSalonListing').Salon {
+export function mapBackendSalonToDisplaySalon(
+  backendSalon: BackendSalon
+): import("../components/HairSalonListing").Salon {
   // Calculate rating from reviews (simplified - you might want to implement proper rating calculation)
   const rating = backendSalon.reviews.length > 0 ? 4.5 : 0; // Default rating logic
-  
+
   // Determine price range based on services (you can customize this logic)
-  const priceRange = backendSalon.services.length > 5 ? '$$$' : '$$';
-  
+  const priceRange = backendSalon.services.length > 5 ? "$$$" : "$$";
+
   // Format hours
   const hours = `${backendSalon.openTime} - ${backendSalon.closeTime}`;
-  
+
   // Calculate distance (you'll need to implement geolocation calculation)
-  const distance = '0.5 miles'; // Placeholder
-  
+  const distance = "0.5 miles"; // Placeholder
+
   return {
-    id: backendSalon.id || '',
+    id: backendSalon.id || "",
     name: backendSalon.name,
     rating,
     reviewCount: backendSalon.reviews.length,
     address: backendSalon.address,
     distance,
     priceRange,
-    image: backendSalon.bannerImage || backendSalon.images[0] || '/videos/placeholder.jpg',
+    image:
+      backendSalon.bannerImage ||
+      backendSalon.images[0] ||
+      "/videos/placeholder.jpg",
     services: backendSalon.services,
     isOpen: backendSalon.available,
     hours,
