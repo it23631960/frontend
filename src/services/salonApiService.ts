@@ -148,12 +148,14 @@ export function mapBackendSalonToDisplaySalon(
   const slugify = (s: string) =>
     s
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)+/g, '');
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)+/g, "");
 
-  const safeId = (backendSalon.id && String(backendSalon.id).trim())
-    ? String(backendSalon.id).trim()
-    : slugify(`${backendSalon.name}-${backendSalon.phone || ''}`) || slugify(backendSalon.name);
+  const safeId =
+    backendSalon.id && String(backendSalon.id).trim()
+      ? String(backendSalon.id).trim()
+      : slugify(`${backendSalon.name}-${backendSalon.phone || ""}`) ||
+        slugify(backendSalon.name);
 
   return {
     id: safeId,
