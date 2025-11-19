@@ -145,8 +145,18 @@ export function mapBackendSalonToDisplaySalon(
   // Calculate distance (you'll need to implement geolocation calculation)
   const distance = "0.5 miles"; // Placeholder
 
+  const slugify = (s: string) =>
+    s
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)+/g, '');
+
+  const safeId = (backendSalon.id && String(backendSalon.id).trim())
+    ? String(backendSalon.id).trim()
+    : slugify(`${backendSalon.name}-${backendSalon.phone || ''}`) || slugify(backendSalon.name);
+
   return {
-    id: backendSalon.id || "",
+    id: safeId,
     name: backendSalon.name,
     rating,
     reviewCount: backendSalon.reviews.length,
