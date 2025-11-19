@@ -1,7 +1,7 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Clock, Star, Sparkles } from 'lucide-react';
-import { Service } from '../../types/booking';
+import React from "react";
+import { motion } from "framer-motion";
+import { Clock, Star, Sparkles } from "lucide-react";
+import { Service } from "../../types/booking";
 
 interface ServiceSelectionProps {
   services: Service[];
@@ -14,23 +14,68 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
   services,
   selectedServiceId,
   onServiceSelect,
-  loading
+  loading,
 }) => {
-  const categories = ['Haircut', 'Coloring', 'Styling', 'Treatments', 'Extensions'] as const;
+  // Derive categories from available services, ordered by a preferred list
+  const preferredOrder = [
+    "Haircut",
+    "Coloring",
+    "Styling",
+    "Treatments",
+    "Extensions",
+    "Hair",
+    "Nails",
+    "Spa",
+    "Makeup",
+    "Waxing",
+    "General",
+  ] as const;
+  const dynamicCategories = Array.from(
+    new Set(services.map((s) => s.category))
+  );
+  const categories = [
+    ...preferredOrder.filter((c) =>
+      dynamicCategories.includes(c as unknown as string)
+    ),
+    ...dynamicCategories.filter(
+      (c) =>
+        !preferredOrder.includes(
+          c as unknown as (typeof preferredOrder)[number]
+        )
+    ),
+  ];
 
   const servicesByCategory = categories.reduce((acc, category) => {
-    acc[category] = services.filter(service => service.category === category);
+    acc[category] = services.filter((service) => service.category === category);
     return acc;
   }, {} as Record<string, Service[]>);
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
-      case 'Haircut': return '✂️';
-      case 'Coloring': return '🎨';
-      case 'Styling': return '💫';
-      case 'Treatments': return '✨';
-      case 'Extensions': return '💄';
-      default: return '💅';
+      case "Haircut":
+        return "✂️";
+      case "Coloring":
+        return "🎨";
+      case "Styling":
+        return "💫";
+      case "Treatments":
+        return "✨";
+      case "Extensions":
+        return "💄";
+      case "Hair":
+        return "💇";
+      case "Nails":
+        return "💅";
+      case "Spa":
+        return "🧖";
+      case "Makeup":
+        return "💋";
+      case "Waxing":
+        return "🕯️";
+      case "General":
+        return "⭐";
+      default:
+        return "💅";
     }
   };
 
@@ -42,7 +87,10 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
             <div className="h-6 bg-white/10 rounded animate-pulse" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[1, 2].map((item) => (
-                <div key={item} className="h-32 bg-white/5 rounded-xl animate-pulse" />
+                <div
+                  key={item}
+                  className="h-32 bg-white/5 rounded-xl animate-pulse"
+                />
               ))}
             </div>
           </div>
@@ -74,7 +122,7 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
               <span className="text-2xl">{getCategoryIcon(category)}</span>
               <h4 className="text-xl font-semibold text-white">{category}</h4>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {categoryServices.map((service, index) => (
                 <motion.div
@@ -89,11 +137,12 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
                     className={`
                       relative p-6 rounded-xl cursor-pointer transition-all duration-300 
                       border-2 backdrop-blur-md
-                      ${selectedServiceId === service.id
-                        ? 'border-purple-400 bg-gradient-to-br from-purple-500/20 to-pink-500/20 shadow-lg shadow-purple-500/20'
-                        : 'border-white/10 bg-white/5 hover:border-purple-400/50 hover:bg-white/10'
+                      ${
+                        selectedServiceId === service.id
+                          ? "border-purple-400 bg-gradient-to-br from-purple-500/20 to-pink-500/20 shadow-lg shadow-purple-500/20"
+                          : "border-white/10 bg-white/5 hover:border-purple-400/50 hover:bg-white/10"
                       }
-                      ${service.popular ? 'ring-2 ring-yellow-400/30' : ''}
+                      ${service.popular ? "ring-2 ring-yellow-400/30" : ""}
                     `}
                   >
                     {/* Popular Badge */}
@@ -144,7 +193,9 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
 
                       {/* Service Includes */}
                       <div className="space-y-2">
-                        <div className="text-xs text-white/50 uppercase tracking-wider">Includes:</div>
+                        <div className="text-xs text-white/50 uppercase tracking-wider">
+                          Includes:
+                        </div>
                         <div className="flex flex-wrap gap-1">
                           {service.includes.slice(0, 3).map((item) => (
                             <span
@@ -169,8 +220,9 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
                             Available Add-ons:
                           </div>
                           <div className="text-xs text-white/60">
-                            {service.addOns.slice(0, 2).join(', ')}
-                            {service.addOns.length > 2 && ` +${service.addOns.length - 2} more`}
+                            {service.addOns.slice(0, 2).join(", ")}
+                            {service.addOns.length > 2 &&
+                              ` +${service.addOns.length - 2} more`}
                           </div>
                         </div>
                       )}
@@ -188,8 +240,12 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
 
       {services.length === 0 && !loading && (
         <div className="text-center py-12">
-          <div className="text-white/40 text-lg mb-2">No services available</div>
-          <div className="text-white/60 text-sm">Please check back later or contact the salon directly.</div>
+          <div className="text-white/40 text-lg mb-2">
+            No services available
+          </div>
+          <div className="text-white/60 text-sm">
+            Please check back later or contact the salon directly.
+          </div>
         </div>
       )}
     </motion.div>
