@@ -187,8 +187,12 @@ export const bookingApiService = {
       date: request.date,
     });
 
+    const base = API_BASE_URL.endsWith("/api")
+      ? API_BASE_URL
+      : `${API_BASE_URL}/api`;
+
     const slots = await apiRequest<any[]>(
-      `${API_BASE_URL}/appointments/slots/available?${params}`
+      `${base}/appointments/slots/available?${params}`
     );
 
     // Transform backend TimeSlot model to frontend TimeSlot interface
@@ -224,7 +228,11 @@ export const bookingApiService = {
       notes: booking.specialRequests || "",
     };
 
-    const response = await apiRequest<any>(`${API_BASE_URL}/appointments`, {
+    const base = API_BASE_URL.endsWith("/api")
+      ? API_BASE_URL
+      : `${API_BASE_URL}/api`;
+
+    const response = await apiRequest<any>(`${base}/appointments`, {
       method: "POST",
       body: JSON.stringify(backendRequest),
     });
@@ -277,9 +285,10 @@ export const bookingApiService = {
    * Get booking by ID (Spring Boot endpoint)
    */
   async getBooking(bookingId: string): Promise<BookingConfirmation> {
-    const response = await apiRequest<any>(
-      `${API_BASE_URL}/appointments/${bookingId}`
-    );
+    const base = API_BASE_URL.endsWith("/api")
+      ? API_BASE_URL
+      : `${API_BASE_URL}/api`;
+    const response = await apiRequest<any>(`${base}/appointments/${bookingId}`);
 
     return {
       id: response.id,
@@ -330,9 +339,10 @@ export const bookingApiService = {
   async getBookingByConfirmationCode(
     confirmationCode: string
   ): Promise<BookingConfirmation> {
-    const response = await apiRequest<any>(
-      `${API_BASE_URL}/appointments/confirmation/${confirmationCode}`
-    );
+    const base = API_BASE_URL.endsWith("/api")
+      ? API_BASE_URL
+      : `${API_BASE_URL}/api`;
+    const response = await apiRequest<any>(`${base}/appointments/confirmation/${confirmationCode}`);
 
     return {
       id: response.id,

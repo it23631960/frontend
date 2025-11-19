@@ -91,7 +91,7 @@ export const useNailSalonSearch = () => {
           return 0;
         });
       case "newest":
-        return sorted.sort((a, b) => b.id - a.id);
+        return sorted.sort((a, b) => String(b.id).localeCompare(String(a.id)));
       case "distance":
       default:
         return sorted.sort((a, b) => {

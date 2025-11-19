@@ -10,7 +10,7 @@ import { SalonCardSkeleton } from './LoadingComponents';
 import { useSalonSearch } from '../hooks/useSalonSearch';
 
 export interface Salon {
-  id: number;
+  id: string;
   name: string;
   rating: number;
   reviewCount: number;

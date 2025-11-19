@@ -135,7 +135,7 @@ export function mapBackendSalonToDisplaySalon(backendSalon: BackendSalon): impor
   const distance = '0.5 miles'; // Placeholder
   
   return {
-    id: parseInt(backendSalon.id || '0'),
+    id: backendSalon.id || '',
     name: backendSalon.name,
     rating,
     reviewCount: backendSalon.reviews.length,

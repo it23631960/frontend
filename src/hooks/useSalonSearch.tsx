@@ -104,7 +104,8 @@ export const useSalonSearch = () => {
           return 0;
         });
       case "newest":
-        return sorted.sort((a, b) => b.id - a.id);
+        // Fallback: sort by id string desc when numeric IDs are not available
+        return sorted.sort((a, b) => String(b.id).localeCompare(String(a.id)));
       case "distance":
       default:
         return sorted.sort((a, b) => {
