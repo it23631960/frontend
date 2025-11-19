@@ -151,11 +151,28 @@ export function mapBackendSalonToDisplaySalon(
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/(^-|-$)+/g, "");
 
-  const safeId =
-    backendSalon.id && String(backendSalon.id).trim()
-      ? String(backendSalon.id).trim()
-      : slugify(`${backendSalon.name}-${backendSalon.phone || ""}`) ||
-        slugify(backendSalon.name);
+  // Generate a safe, non-empty ID
+  let safeId = "";
+
+  // Try using the backend ID if it exists and is valid
+  if (
+    backendSalon.id &&
+    String(backendSalon.id).trim() &&
+    String(backendSalon.id).toLowerCase() !== "nan"
+  ) {
+    safeId = String(backendSalon.id).trim();
+  }
+
+  // Fallback to slugified name if no valid ID
+  if (!safeId) {
+    const nameSlug = slugify(backendSalon.name);
+    const phoneSlug = backendSalon.phone ? slugify(backendSalon.phone) : "";
+    safeId = nameSlug
+      ? phoneSlug
+        ? `${nameSlug}-${phoneSlug}`
+        : nameSlug
+      : `salon-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+  }
 
   return {
     id: safeId,

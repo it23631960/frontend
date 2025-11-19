@@ -119,7 +119,17 @@ export const useBridalSalonSearch = () => {
         }
 
         const backendSalons: BackendSalon[] = await response.json();
-        let displaySalons = backendSalons.map(mapBackendSalonToDisplaySalon);
+        let displaySalons = backendSalons.map((salon, idx) => {
+          const mapped = mapBackendSalonToDisplaySalon(salon);
+          if (
+            !mapped.id ||
+            mapped.id === "nan" ||
+            mapped.id.toLowerCase() === "nan"
+          ) {
+            mapped.id = `bridal-salon-${idx + 1}`;
+          }
+          return mapped;
+        });
 
         displaySalons = filterSalons(displaySalons, filters);
 
@@ -181,7 +191,17 @@ export const useBridalSalonSearch = () => {
       }
 
       const backendSalons: BackendSalon[] = await response.json();
-      const displaySalons = backendSalons.map(mapBackendSalonToDisplaySalon);
+      const displaySalons = backendSalons.map((salon, idx) => {
+        const mapped = mapBackendSalonToDisplaySalon(salon);
+        if (
+          !mapped.id ||
+          mapped.id === "nan" ||
+          mapped.id.toLowerCase() === "nan"
+        ) {
+          mapped.id = `bridal-salon-${idx + 1}`;
+        }
+        return mapped;
+      });
 
       setSalons(displaySalons);
       setTotalCount(displaySalons.length);
